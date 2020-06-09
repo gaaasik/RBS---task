@@ -1,0 +1,178 @@
+<html>
+<head>
+    <title>Shop</title>
+    <!--    <link  rel="stylesheet" href="webix.css" type="text/css" >-->
+    <!--    <script src="webix.js" type="text/javascript"></script>-->
+    <link rel="stylesheet" href="//cdn.webix.com/edge/webix.css" type="text/css">
+
+    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+
+    let storageOne = [
+        {id: '1', nameone: "laptop", quantityone: 12, costone: 25002,},
+        {id: '2', nameone: "Mouse", quantityone: 32, costone: 1500},
+        {id: '3', nameone: "Keyboard", quantityone: 2, costone: 2000},
+        {id: '4', nameone: "Pen", quantityone: 234, costone: 20},
+        {id: '5', nameone: "Printer", quantityone: 213, costone: 4000},
+        {id: '6', nameone: "Phone", quantityone: 21, costone: 22000},
+    ]
+
+    let storage = []
+    let basket = [];
+    let sumAll = 0;
+
+    for (let i=0 ; i<storageOne.length;i++){
+        storage.push({number:storage.length+1,id:i+1,name:storageOne[i].nameone,quantity:storageOne[i].quantityone,cost:storageOne[i].costone})
+
+    }
+    function refreshTable() {
+        $$("basketTable").clearAll();
+        $$("basketTable").define("data", basket);
+        $$("basketTable").refresh();
+        $$("storageTable").refresh();
+        sumAll = sum(basket);
+    }
+
+    function findInd(table, it)
+    {
+        for (let i = 0; i < table.length; i++)
+        {
+            if(table[i].id ===it ){
+                return i ;
+            }
+            }
+
+        return -1;
+
+    }
+
+
+
+    function sum(table){
+
+        for (let i  = 0 ; i<table.length;i++)
+        {
+            sumAll  +=Number(table[i].quantity)
+        }
+        return sumAll
+    }
+
+    webix.ready(function () {
+
+        webix.ui({
+            rows: [{type: "header", template: "Shop"},
+                {
+                    cols: [{
+                        rows: [{
+                            view: "datatable",
+                            id: 'storageTable',
+                            select: "row",
+                            position: "relative",
+                            data: storage,
+                            width: 415,
+                            height: 400,
+                            align: "left",
+
+                            on: {
+                                onitemclick: function () {
+                                    let selectId = $$("storageTable").getItem($$("storageTable").getSelectedId()).id;
+                                    let isInBasket = findInd(basket, selectId);
+                                    let isInStorage = findInd(storage, selectId);
+                                    let selectedCount = $$("storageTable").getItem($$("storageTable").getSelectedId(true)).quantity;
+                                    if (selectedCount === 1) {
+                                        alert("It was the last item ");
+                                        storage.splice(isInStorage,1);
+                                        //delete storage[isInStorage];
+                                        ++basket[isInBasket].quantityBasket;
+                                        refreshTable();
+
+                                    } else {
+
+                                        if (isInBasket > -1)
+                                        { // если  есть  в корзине
+                                            --storage[isInStorage].quantity;
+                                            ++basket[isInBasket].quantityBasket;
+                                           // basket[isInBasket].quantityBasket = basket[isInBasket].cost*++basket[isInBasket].quantity;
+                                            refreshTable();
+                                        } else {
+                                            basket.push({number:basket.length+1,id:selectId,nameBasket:storage[isInStorage].name,quantityBasket:1,costBasket:storage[isInStorage].cost})
+                                            --storage[isInStorage].quantity;
+
+
+                                            refreshTable();
+                                        }
+
+                                    }
+                                },
+                            },
+                            columns: [{id: "id", header: "Articyl"},
+                                {id: "name", header: "Name"},
+                                {id: "quantity", header: "Count"},
+                                {id: "cost", header: "Price"},
+                            ]
+                        }, {view: "resizer"}, {
+                            rows: [{
+                                view: "datatable",
+                                id: "basketTable",
+                                select: "row",
+                                position: "relative",
+                                data: basket,
+                                width: 415,
+                                height: 400,
+
+                                columns: [{id: "id", header: "Articyl"},
+                                    {id: "nameBasket", header: "Name"},
+                                    {id: "quantityBasket", header: "Count"},
+                                    {id: "costBasket", header: "Cost"},],
+                                on: {
+                                    onitemclick: function () {
+                                        let selectId = $$("basketTable").getItem($$("basketTable").getSelectedId()).id;
+                                        let isInBasket = findInd(basket, selectId);
+                                        let isInStorage = findInd(storage, selectId);
+                                        let selectedCount = $$("basketTable").getItem($$("basketTable").getSelectedId(true)).quantityBasket;
+                                        if (selectedCount === 1) {
+                                            alert("It was the last item ");
+                                            basket.splice(isInBasket,1)
+                                            ++storage[isInStorage].quantity;
+                                            refreshTable();
+                                        } else {
+
+                                            if (isInStorage > -1)
+                                            { // если  есть  на складе
+                                                ++storage[isInStorage].quantity;
+                                                --basket[isInBasket].quantityBasket;
+                                                //basket[isInBasket].quantityBasket = basket[isInBasket].cost*++basket[isInBasket].quantity;
+                                                refreshTable();
+                                            } else {
+                                                storage.push({number:storage.length+1,id:selectId,name:basket[isInBasket].nameBasket,quantity:1,cost:basket[isInBasket].costBasket})
+                                                --basket[isInBasket].quantityBasket;
+                                                refreshTable();
+                                            }
+
+                                        }
+
+
+                                    }
+                                },
+
+                            },
+                                {view: "label", id: "allSum", label: "Sum = ", align: "left"}
+                            ]
+                        }]
+
+                    }]
+
+                }
+
+            ]
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
