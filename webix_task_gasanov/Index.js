@@ -17,6 +17,9 @@ function refreshTable() {  // обновляет все таблицы и сум
     $$("basketTable").clearAll();
     $$("basketTable").define("data", basket);
     $$("basketTable").refresh();
+
+    $$("storageTable").clearAll();
+    $$("storageTable").define("data", storage);
     $$("storageTable").refresh();
     sumAll = sum(basket);
 
@@ -73,15 +76,16 @@ webix.ready(function () {
                                 let selectedCount = $$("storageTable").getItem($$("storageTable").getSelectedId(true)).quantity;
                                 if (isInStorage !== -1){
 
-                                    if (selectedCount === 0) { // если это последний элемент в таблице  то ...
+                                    if (selectedCount === 1) { // если это последний элемент в таблице  то ...
                                         webix.message({text:"it was last item",
                                             type: "error"})
-                                        console.log("storage = ",storage);
-                                       // ++basket[isInBasket].quantity;
-                                        storage.splice(isInStorage,1); //пытаемся удалить из таблицы но не получается
+
+                                        storage.splice(isInStorage,1) //пытаемся удалить из таблицы и получается
+
+                                        ++basket[isInBasket].quantity;
                                         refreshTable();
 
-                                        //return;
+
 
                                     } else {
                                         if (isInBasket > -1) // если такой индекс есть  в корзине
@@ -139,7 +143,6 @@ webix.ready(function () {
                                                         type: "error"
                                                         })
 
-                                        console.log("is in storage = ", isInBasket);
                                         basket.splice(isInBasket,1)
                                         ++storage[isInStorage].quantity;
                                         refreshTable();
