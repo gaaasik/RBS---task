@@ -42,7 +42,7 @@ function sum(table){
     sumAll = 0;
     for (let i  = 0 ; i<table.length;i++)
     {
-        sumAll+= table[i].quantityBasket*table[i].costBasket;
+        sumAll+= table[i].quantity*table[i].cost;
 
     }
     return sumAll
@@ -71,12 +71,13 @@ webix.ready(function () {
                                 let isInBasket = findInd(basket, selectId); // находим все индексы и ID
                                 let isInStorage = findInd(storage, selectId);
                                 let selectedCount = $$("storageTable").getItem($$("storageTable").getSelectedId(true)).quantity;
-                                if (isInStorage != -1){
+                                if (isInStorage !== -1){
 
                                     if (selectedCount === 0) { // если это последний элемент в таблице  то ...
-                                        alert("It was the last item ");
+                                        webix.message({text:"it was last item",
+                                            type: "error"})
                                         console.log("storage = ",storage);
-                                        ++basket[isInBasket].quantity;
+                                       // ++basket[isInBasket].quantity;
                                         storage.splice(isInStorage,1); //пытаемся удалить из таблицы но не получается
                                         refreshTable();
 
@@ -103,7 +104,8 @@ webix.ready(function () {
                                         }
                                     }
 
-                                } else{  alert("It was the last item ");}
+                                } else{   webix.message({text:"it was last item",
+                                    type: "error"})}
                             },
                         },
                         columns: [{id: "id", header: "Articyl"},
@@ -133,7 +135,9 @@ webix.ready(function () {
                                     let selectedCount = $$("basketTable").getItem($$("basketTable").getSelectedId(true)).quantity;
 
                                     if (selectedCount === 1) { //тут удаление работает прекрасно
-                                        alert("It was the last item ");
+                                        webix.message({text:"it was last item",
+                                                        type: "error"
+                                                        })
 
                                         console.log("is in storage = ", isInBasket);
                                         basket.splice(isInBasket,1)
