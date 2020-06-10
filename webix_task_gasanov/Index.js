@@ -1,21 +1,22 @@
 
-    let storageOne = [
-    {id: '1', nameone: "laptop", quantityone: 12, costone: 25002,},
-    {id: '2', nameone: "Mouse", quantityone: 2, costone: 1500},
-    {id: '3', nameone: "Keyboard", quantityone: 2, costone: 2000},
-    {id: '4', nameone: "Pen", quantityone: 234, costone: 20},
-    {id: '5', nameone: "Printer", quantityone: 213, costone: 4000},
-    {id: '6', nameone: "Phone", quantityone: 21, costone: 21000},
+    let storage = [
+    {id: '1', name: "laptop", quantity: 12, cost: 25002,},
+    {id: '2', name: "Mouse", quantity: 2, cost: 1500},
+    {id: '3', name: "Keyboard", quantity: 2, cost: 2000},
+    {id: '4', name: "Pen", quantity: 234, cost: 20},
+    {id: '5', name: "Printer", quantity: 213, cost: 4000},
+    {id: '6', name: "Phone", quantity: 21, cost: 21000},
 ]
 
-let storage = []
+//let storage = []
 let basket = [];
 let sumAll = 0;
 
-for (let i=0 ; i<storageOne.length;i++){ //заполняет массив склада(думал поможет при удалении строки из склада, но не помогло)
-    storage.push({number:storage.length+1,id:i+1,name:storageOne[i].nameone,quantity:storageOne[i].quantityone,cost:storageOne[i].costone})
+// for (let i=0 ; i<storageOne.length;i++){ //заполняет массив склада(думал поможет при удалении строки из склада, но не помогло)
+//     storage.push({number:storage.length+1,id:i+1,name:storageOne[i].nameone,quantity:storageOne[i].quantityone,cost:storageOne[i].costone})
+//
+// }
 
-}
 function refreshTable() {  // обновляет все таблицы и сумму
     $$("basketTable").clearAll();
     $$("basketTable").define("data", basket);
@@ -79,28 +80,28 @@ webix.ready(function () {
                                     if (selectedCount === 0) { // если это последний элемент в таблице  то ...
                                         alert("It was the last item ");
 
-                                        // console.log("storage = ",storage);
-                                        // ++basket[isInBasket].quantityBasket;
-                                        // storage.splice(isInStorage,1); //пытаемся удалить из таблицы но не получается
-                                        // //  $$("storageTable").refresh();
-                                        // refreshTable();
-                                        //
-                                        // console.log("storage1 = ",storage);
-                                        // return;
+                                        console.log("storage = ",storage);
+                                        ++basket[isInBasket].quantity;
+                                        storage.splice(isInStorage,1); //пытаемся удалить из таблицы но не получается
+
+                                        refreshTable();
+
+                                        console.log("storage1 = ",storage);
+                                        //return;
 
                                     } else {
                                         if (isInBasket > -1) // если такой индекс есть  в корзине
                                         { //то просто увеличиваем число в корзине и уменьшаем на складе
                                             --storage[isInStorage].quantity;
-                                            ++basket[isInBasket].quantityBasket;
+                                            ++basket[isInBasket].quantity;
                                             refreshTable();
                                         } else { //если такого индекса нет то вставляем строку и уменьшаем счетчик в складе
                                             basket.push({
                                                 number: basket.length + 1,
                                                 id: selectId,
-                                                nameBasket: storage[isInStorage].name,
-                                                quantityBasket: 1,
-                                                costBasket: storage[isInStorage].cost
+                                                name: storage[isInStorage].name,
+                                                quantity: 1,
+                                                cost: storage[isInStorage].cost
                                             })
                                             --storage[isInStorage].quantity;
 
@@ -128,15 +129,15 @@ webix.ready(function () {
                             height: 400,
 
                             columns: [{id: "id", header: "Articyl"},
-                                {id: "nameBasket", header: "Name"},
-                                {id: "quantityBasket", header: "Count"},
-                                {id: "costBasket", header: "Cost"},],
+                                {id: "name", header: "Name"},
+                                {id: "quantity", header: "Count"},
+                                {id: "cost", header: "Cost"},],
                             on: {
                                 onitemclick: function () { // все то же самое только кое где поменял переменные
                                     let selectId = $$("basketTable").getItem($$("basketTable").getSelectedId()).id;
                                     let isInBasket = findInd(basket, selectId);
                                     let isInStorage = findInd(storage, selectId);
-                                    let selectedCount = $$("basketTable").getItem($$("basketTable").getSelectedId(true)).quantityBasket;
+                                    let selectedCount = $$("basketTable").getItem($$("basketTable").getSelectedId(true)).quantity;
 
                                     if (selectedCount === 1) { //тут удаление работает прекрасно
                                         alert("It was the last item ");
@@ -150,11 +151,11 @@ webix.ready(function () {
                                         if (isInStorage > -1)
                                         { // если  есть  на складе
                                             ++storage[isInStorage].quantity;
-                                            --basket[isInBasket].quantityBasket;
+                                            --basket[isInBasket].quantity;
                                             refreshTable();
                                         } else {
-                                            storage.push({number:storage.length+1,id:selectId,name:basket[isInBasket].nameBasket,quantity:1,cost:basket[isInBasket].costBasket})
-                                            --basket[isInBasket].quantityBasket;
+                                            storage.push({number:storage.length+1,id:selectId,name:basket[isInBasket].name,quantity:1,cost:basket[isInBasket].cost})
+                                            --basket[isInBasket].quantity;
                                             refreshTable();
                                         }
 
