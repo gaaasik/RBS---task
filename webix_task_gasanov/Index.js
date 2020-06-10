@@ -1,21 +1,17 @@
 
     let storage = [
-    {id: '1', name: "laptop", quantity: 12, cost: 25002,},
-    {id: '2', name: "Mouse", quantity: 2, cost: 1500},
-    {id: '3', name: "Keyboard", quantity: 2, cost: 2000},
-    {id: '4', name: "Pen", quantity: 234, cost: 20},
-    {id: '5', name: "Printer", quantity: 213, cost: 4000},
-    {id: '6', name: "Phone", quantity: 21, cost: 21000},
+    {number:1,id: '1', name: "laptop", quantity: 12, cost: 25002,},
+    {number:2,id: '2', name: "Mouse", quantity: 2, cost: 1500},
+    {number:3,id: '3', name: "Keyboard", quantity: 2, cost: 2000},
+    {number:4,id: '4', name: "Pen", quantity: 234, cost: 20},
+    {number:5,id: '5', name: "Printer", quantity: 213, cost: 4000},
+    {number:6,id: '6', name: "Phone", quantity: 21, cost: 21000},
 ]
 
 //let storage = []
 let basket = [];
 let sumAll = 0;
 
-// for (let i=0 ; i<storageOne.length;i++){ //заполняет массив склада(думал поможет при удалении строки из склада, но не помогло)
-//     storage.push({number:storage.length+1,id:i+1,name:storageOne[i].nameone,quantity:storageOne[i].quantityone,cost:storageOne[i].costone})
-//
-// }
 
 function refreshTable() {  // обновляет все таблицы и сумму
     $$("basketTable").clearAll();
@@ -79,14 +75,11 @@ webix.ready(function () {
 
                                     if (selectedCount === 0) { // если это последний элемент в таблице  то ...
                                         alert("It was the last item ");
-
                                         console.log("storage = ",storage);
                                         ++basket[isInBasket].quantity;
                                         storage.splice(isInStorage,1); //пытаемся удалить из таблицы но не получается
-
                                         refreshTable();
 
-                                        console.log("storage1 = ",storage);
                                         //return;
 
                                     } else {
@@ -154,7 +147,12 @@ webix.ready(function () {
                                             --basket[isInBasket].quantity;
                                             refreshTable();
                                         } else {
-                                            storage.push({number:storage.length+1,id:selectId,name:basket[isInBasket].name,quantity:1,cost:basket[isInBasket].cost})
+                                            storage.push({
+                                                number:storage.length+1,
+                                                id:selectId,
+                                                name:basket[isInBasket].name,
+                                                quantity:1,
+                                                cost:basket[isInBasket].cost})
                                             --basket[isInBasket].quantity;
                                             refreshTable();
                                         }
